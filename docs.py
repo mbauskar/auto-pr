@@ -7,7 +7,7 @@ def build_docs(apps, _pull=False):
 
 	release_bench = config.get("release_bench")
 	release_bench_sitename = config.get("release_bench_sitename")
-	commit_msg = config.get("docs_commit_msg") or "[docs] documentation update"
+	commit_msg = config.get("docs_commit_msg")
 
 	docs_path = os.path.join(release_bench, 'docs')
 	if not os.path.isdir(docs_path):

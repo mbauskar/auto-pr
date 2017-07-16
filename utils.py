@@ -85,6 +85,7 @@ def pull_request(app, pr_title, branch, base="develop"):
 	global config
 
 	owner = 'frappe'
+	pr_body = config.get("pr_body")
 	in_test = config.get("in_test")
 	git_in_test = config.get("git_in_test")
 	github_username = config.get("github_username")
@@ -92,8 +93,8 @@ def pull_request(app, pr_title, branch, base="develop"):
 	url = 'https://api.github.com/repos/{0}/{1}/pulls'.format(owner, app)
 
 	args = {
+		"body": pr_body,
 		"title": pr_title,
-		"body": "This is system generated pull-request",
 		"head": "{github_username}:{branch}".format(
 			github_username=github_username,
 			branch=branch
