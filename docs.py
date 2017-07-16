@@ -6,7 +6,7 @@ def build_docs(apps, _pull=False):
 	from utils import config
 
 	release_bench = config.get("release_bench")
-	release_bench_sitename = config.get("release_bench_sitename")
+	release_bench_site = config.get("release_bench_site")
 	commit_msg = config.get("docs_commit_msg")
 
 	docs_path = os.path.join(release_bench, 'docs')
@@ -27,6 +27,7 @@ def build_docs(apps, _pull=False):
 				continue
 
 			# rebase the gh-pages branch from upstream
+			checkout(repo_path, "gh-pages")
 			pull(repo_path, "upstream", "gh-pages")
 			if _pull:
 				pull(apps_path, "upstream", "develop")
@@ -35,10 +36,11 @@ def build_docs(apps, _pull=False):
 
 			# build docs
 			exec_cmd(release_bench, \
-				['bench --site {0} build-docs {1}'.format(release_bench_sitename, app)])
+				['bench --site {0} build-docs {1}'.format(release_bench_site, app)])
+
 			# pushing changes to gh-pages branch
 			push(app, repo_path, branch, commit_msg, commit=True)
 			pull_request(app, commit_msg, branch, base="gh-pages")
-			checkout(repo_path, "gh-pages", delete_branch_after_checkout=True, delete_branch_name=branch)
+			checkout(repo_path, "gh-pages", delete_branch_after_checkout=True, delete_branch=branch)
 		except Exception as e:
 			print e

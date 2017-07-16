@@ -56,12 +56,12 @@ def pull(repo, remote, branch="develop", rebase=True):
 		)
 	exec_cmd(repo, [cmd])
 
-def push(app, repo_path, branch_name, commit_msg, commit=True):
+def push(app, repo_path, branch, commit_msg, commit=True):
 	from utils import config
 	in_test = config.get("in_test")
 	git_in_test = config.get("git_in_test")
 
-	if not all([repo_path, branch_name, commit_msg]):
+	if not all([repo_path, branch, commit_msg]):
 		raise Exception("Invalid arguments")
 
 	if ("{app}" in commit_msg) and ("{date}" in commit_msg):
@@ -73,7 +73,7 @@ def push(app, repo_path, branch_name, commit_msg, commit=True):
 		repo.index.commit(commit_msg)
 
 	args = [
-		'{branch}:{branch}'.format(branch=branch_name),
+		'{branch}:{branch}'.format(branch=branch),
 	]
 	# push the changes
 	if (not in_test) and (not git_in_test):
@@ -109,9 +109,9 @@ def pull_request(app, pr_title, branch, base="develop"):
 
 	print "created pull request for {0}".format(app)
 
-def checkout(path, branch, create_new=False, delete_branch_after_checkout=False, delete_branch_name=None):
+def checkout(path, branch, create_new=False, delete_branch_after_checkout=False, delete_branch=None):
 	# git checkout to `branch name`
 	cmd = "git checkout {0} {1}".format("-b" if create_new else "", branch)
 	exec_cmd(path, [cmd])
-	if delete_branch_after_checkout and delete_branch_name:
-		exec_cmd(path, ['git branch -D {0}'.format(delete_branch_name)])
+	if delete_branch_after_checkout and delete_branch:
+		exec_cmd(path, ['git branch -D {0}'.format(delete_branch)])
