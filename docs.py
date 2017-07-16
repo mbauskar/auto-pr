@@ -37,7 +37,7 @@ def build_docs(apps, _pull=False):
 			exec_cmd(release_bench, \
 				['bench --site {0} build-docs {1}'.format(release_bench_sitename, app)])
 			# pushing changes to gh-pages branch
-			push(repo_path, branch, commit_msg, commit=True)
+			push(app, repo_path, branch, commit_msg, commit=True)
 			pull_request(app, commit_msg, branch, base="gh-pages")
 			checkout(repo_path, "gh-pages", delete_branch_after_checkout=True, delete_branch_name=branch)
 		except Exception as e:

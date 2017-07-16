@@ -16,9 +16,9 @@ def cli():
 @click.option('--app', default="all", help='build translation for app, \
 	if not specified then translation will be build for apps defined in config')
 @click.option('--pull', is_flag=True, help="pull changes in app before building documentatation")
-def translation(app="all", update=True):
+def translation(app="all", pull=False):
 	apps = validate_and_return_apps(app)
-	build_translation(apps, pull=pull)
+	build_translation(apps, _pull=pull)
 
 @cli.command()
 @click.option('--app', default="all", help='build documentation for app, \
@@ -37,14 +37,12 @@ def build(app=None):
 		build documentation
 		build translation
 	"""
-	from utils import config
-
 	apps = validate_and_return_apps(app)
 	update_benches()
 
-	# build documentation
+	# build documentation & translation
 	build_docs(apps, _pull=False)
-	# build_translation(apps, pull=False)
+	build_translation(apps, _pull=False)
 
 if __name__=='__main__':
 	cli()
