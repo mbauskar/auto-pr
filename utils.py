@@ -48,7 +48,7 @@ def exec_cmd(cwd, cmd):
 	if return_code > 0:
 		raise Exception("{0} command failed".format(cmd))
 
-def pull(repo, remote, branch="develop", rebase=True):
+def pull(repo, remote, branch="staging", rebase=True):
 	cmd = "git pull {rebase} {remote} {branch}".format(
 			rebase="--rebase" if rebase else "",
 			remote=remote or "upstream",
@@ -81,7 +81,7 @@ def push(app, repo_path, branch, commit_msg, commit=True):
 
 	print "pushed the changes to repo with commit message\n{0}".format(commit_msg)
 
-def pull_request(app, pr_title, branch, base="develop"):
+def pull_request(app, pr_title, branch, base="staging"):
 	global config
 
 	owner = 'frappe'

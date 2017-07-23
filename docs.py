@@ -30,7 +30,7 @@ def build_docs(apps, _pull=False):
 			checkout(repo_path, "gh-pages")
 			pull(repo_path, "upstream", "gh-pages")
 			if _pull:
-				pull(apps_path, "upstream", "develop")
+				pull(apps_path, "upstream", "staging")
 
 			checkout(repo_path, branch, create_new=True)
 

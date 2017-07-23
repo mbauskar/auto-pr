@@ -17,6 +17,7 @@ def cli():
 	if not specified then translation will be build for apps defined in config')
 @click.option('--pull', is_flag=True, help="pull changes in app before building documentatation")
 def translation(app="all", pull=False):
+	""" build the translation """
 	apps = validate_and_return_apps(app)
 	build_translation(apps, _pull=pull)
 
@@ -25,6 +26,7 @@ def translation(app="all", pull=False):
 	if not specified then translation will be build for apps defined in config')
 @click.option('--pull', is_flag=True, help="pull changes in app before building documentatation")
 def docs(app="all", pull=False):
+	""" build the documentation """
 	apps = validate_and_return_apps(app)
 	build_docs(apps, _pull=pull)
 
@@ -32,11 +34,7 @@ def docs(app="all", pull=False):
 @click.option('--app', default="all", help='build documentation and translation for app, \
 	if not specified then translation will be build for apps defined in config')
 def build(app=None):
-	"""
-		update both frappe-bench and release-bench
-		build documentation
-		build translation
-	"""
+	"""update the benches and build documentations / translation"""
 	apps = validate_and_return_apps(app)
 	update_benches()
 

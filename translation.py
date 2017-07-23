@@ -38,14 +38,14 @@ def build_translation(apps, _pull=False):
 				continue
 
 			if _pull:
-				pull(path, "upstream", "develop")
+				pull(path, "upstream", "staging")
 			checkout(path, branch, create_new=True)
 
 			args = [
 				'{branch}:{branch}'.format(branch=branch),
 			]
 			push(app, path, branch, commit_msg)
-			pull_request(app, commit_msg, branch, base="develop")
-			checkout(path, "develop", delete_branch_after_checkout=True, delete_branch=branch)
+			pull_request(app, commit_msg, branch, base="staging")
+			checkout(path, "staging", delete_branch_after_checkout=True, delete_branch=branch)
 	except Exception as e:
 		print e
