@@ -8,11 +8,8 @@ def build_docs(apps, _pull=False):
 	release_bench = config.get("release_bench")
 	release_bench_site = config.get("release_bench_site")
 	commit_msg = config.get("docs_commit_msg")
-
-	docs_path = os.path.join(release_bench, 'docs')
-	if not os.path.isdir(docs_path):
-		print "release bench is not configured to build documentation"
-		return
+	target_app_mapper = config.get("docs_target_apps")
+	base_branch = config.get("base_branch") or "develop"
 
 	branch = "docs-{0}".format(now_date(format='%Y.%m.%d'))
 	for app in apps:
@@ -21,26 +18,27 @@ def build_docs(apps, _pull=False):
 			if not apps_path:
 				print "app is not installed"
 
-			repo_path = os.path.join(docs_path, app)
-			if not os.path.isdir(repo_path):
-				print "release bench is not configured to build {0}'s documentation".format(repo_path)
-				continue
+			target = target_app_mapper.get(app, {})
+			target_app = target.get("app", None)
+			owner = target.get("owner", None)
+			if not target_app or not owner:
+				print "target app mapping not available"
 
-			# rebase the gh-pages branch from upstream
-			checkout(repo_path, "gh-pages")
-			pull(repo_path, "upstream", "gh-pages")
+			target_app_path = os.path.join(release_bench, 'apps', target_app)
+			if not target_app_path:
+				print "app is not installed"
+
 			if _pull:
-				pull(apps_path, "upstream", "staging")
+				pull(apps_path, "upstream", base_branch)
 
-			checkout(repo_path, branch, create_new=True)
+			checkout(target_app_path, branch, create_new=True)
 
 			# build docs
 			exec_cmd(release_bench, \
-				['bench --site {0} build-docs {1}'.format(release_bench_site, app)])
+				['bench --site {0} build-docs --target {1} {2}'.format(release_bench_site, target_app, app)])
 
-			# pushing changes to gh-pages branch
-			push(app, repo_path, branch, commit_msg, commit=True)
-			pull_request(app, commit_msg, branch, base="gh-pages")
-			checkout(repo_path, "gh-pages", delete_branch_after_checkout=True, delete_branch=branch)
+			push(app, target_app_path, branch, commit_msg, commit=True)
+			pull_request(app, commit_msg, branch, base="master", owner=owner)
+			checkout(target_app_path, "master", delete_branch_after_checkout=False, delete_branch=branch)
 		except Exception as e:
 			print e

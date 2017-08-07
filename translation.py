@@ -11,6 +11,7 @@ def build_translation(apps, _pull=False):
 	release_bench_site = config.get("release_bench_site")
 	update_bench_site = config.get("update_bench_site")
 	commit_msg = config.get("translation_commit_msg") or "[docs] Updated translation"
+	base_branch = config.get("base_branch") or "develop"
 
 	# import source messages
 	exec_cmd(update_bench,
@@ -38,14 +39,14 @@ def build_translation(apps, _pull=False):
 				continue
 
 			if _pull:
-				pull(path, "upstream", "staging")
+				pull(path, "upstream", base_branch)
 			checkout(path, branch, create_new=True)
 
 			args = [
 				'{branch}:{branch}'.format(branch=branch),
 			]
 			push(app, path, branch, commit_msg)
-			pull_request(app, commit_msg, branch, base="staging")
-			checkout(path, "staging", delete_branch_after_checkout=True, delete_branch=branch)
+			pull_request(app, commit_msg, branch, base=base_branch)
+			checkout(path, base_branch, delete_branch_after_checkout=True, delete_branch=branch)
 	except Exception as e:
 		print e

@@ -81,10 +81,9 @@ def push(app, repo_path, branch, commit_msg, commit=True):
 
 	print "pushed the changes to repo with commit message\n{0}".format(commit_msg)
 
-def pull_request(app, pr_title, branch, base="staging"):
+def pull_request(app, pr_title, branch, base="staging", owner='frappe'):
 	global config
 
-	owner = 'frappe'
 	pr_body = config.get("pr_body")
 	in_test = config.get("in_test")
 	git_in_test = config.get("git_in_test")
