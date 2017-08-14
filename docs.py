@@ -9,7 +9,7 @@ def build_docs(apps, _pull=False):
 	release_bench_site = config.get("release_bench_site")
 	commit_msg = config.get("docs_commit_msg")
 	target_app_mapper = config.get("docs_target_apps")
-	base_branch = config.get("base_branch") or "develop"
+	base_branches = config.get("base_branch_mapper") or {}
 
 	branch = "docs-{0}".format(now_date(format='%Y.%m.%d'))
 	for app in apps:
@@ -29,7 +29,8 @@ def build_docs(apps, _pull=False):
 				print "app is not installed"
 
 			if _pull:
-				pull(apps_path, "upstream", base_branch)
+				pull(apps_path, "upstream", base_branches.get(app, "develop"))
+				pull(target_app_path, "upstream", base_branches.get(target_app, "master"))
 
 			checkout(target_app_path, branch, create_new=True)
 
@@ -38,7 +39,9 @@ def build_docs(apps, _pull=False):
 				['bench --site {0} build-docs --target {1} {2}'.format(release_bench_site, target_app, app)])
 
 			push(app, target_app_path, branch, commit_msg, commit=True)
-			pull_request(app, commit_msg, branch, base="master", owner=owner)
-			checkout(target_app_path, "master", delete_branch_after_checkout=False, delete_branch=branch)
+			pull_request(target_app, commit_msg, branch, base=base_branches.get(target_app, "master"),
+				owner=owner)
+			checkout(target_app_path, base_branches.get(target_app, "master"), 
+				delete_branch_after_checkout=False, delete_branch=branch)
 		except Exception as e:
 			print e

@@ -11,7 +11,7 @@ def build_translation(apps, _pull=False):
 	release_bench_site = config.get("release_bench_site")
 	update_bench_site = config.get("update_bench_site")
 	commit_msg = config.get("translation_commit_msg") or "[docs] Updated translation"
-	base_branch = config.get("base_branch") or "develop"
+	base_branches = config.get("base_branch_mapper") or {}
 
 	# import source messages
 	exec_cmd(update_bench,
@@ -38,6 +38,7 @@ def build_translation(apps, _pull=False):
 				print "app is not installed"
 				continue
 
+			base_branch = base_branches.get(app, "develop")
 			if _pull:
 				pull(path, "upstream", base_branch)
 			checkout(path, branch, create_new=True)
