@@ -10,4 +10,4 @@ def update_benches():
 	release_bench = config.get("release_bench")
 
 	for bench in [update_bench, release_bench]:
-		exec_cmd(bench, ['bench update --no-backup'])
+		exec_cmd(bench, ['bench update --no-backup --reset'])
